@@ -46,15 +46,49 @@ class Maze:
         Attempts to solve the maze by finding a path from the starting cell
         to the exit. Returns True if a path is found and False otherwise.
         """
-        pass
+        n_path = Stack()
+        n_path.push(self._start_cell)
+        while not n_path.is_empty():
+            cur_cell = n_path.peek()
+            self._mark_path(cur_cell.row, cur_cell.col)
+            if self._exit_found(cur_cell.row, cur_cell.col):
+                return True
+            moves = [
+                (cur_cell.row, cur_cell.col-1),
+                (cur_cell.row+1, cur_cell.col),
+                (cur_cell.row, cur_cell.col+1),
+                (cur_cell.row-1, cur_cell.col)
+            ]
+            has_valid = False
+            for move in moves:
+                if self._valid_move(move[0], move[1]):
+                    n_path.push(_CellPosition(move[0], move[1]))
+                    has_valid = True
+            if not has_valid:
+                self._mark_tried(cur_cell.row, cur_cell.col)
+                n_path.pop()
+                # for move in reversed(moves):
+                #     if 0 <= move[0] < self.num_rows() and 0 <= move[1] < self.num_cols():
+                #         if self._maze_cells[move[0], move[1]] == self.PATH_TOKEN:
+                #             n_path.push(_CellPosition(move[0], move[1]))
+            # print(self, '\n')
+        return False
 
     def reset(self):
         """Resets the maze by removing all "path" and "tried" tokens."""
-        pass
+        for row in range(self.num_rows()):
+            for col in range(self.num_cols()):
+                if self._maze_cells[row, col] != self.MAZE_WALL:
+                    self._maze_cells[row, col] = None
 
     def __str__(self):
         """Returns a text-based representation of the maze."""
-        pass
+        return ' \n'.join([
+            ' '.join([
+                self._maze_cells[row, col] or '_'
+                for col in range(self.num_cols())
+            ]) for row in range(self.num_rows())
+        ])+' '
 
     def _valid_move(self, row, col):
         """Returns True if the given cell position is a valid move."""
@@ -89,61 +123,35 @@ def build_maze(filename):
 
     # Read the size of the maze.
     nrows, ncols = read_value_pair(infile)
-    maze = Maze(nrows, ncols)
+    maze1 = Maze(nrows, ncols)
 
     # Read the starting and exit positions.
     row, col = read_value_pair(infile)
-    maze.set_start(row, col)
+    maze1.set_start(row, col)
     row, col = read_value_pair(infile)
-    maze.set_exit(row, col)
+    maze1.set_exit(row, col)
 
     # Read the maze itself.
     for row in range(nrows):
         line = infile.readline()
         for col in range(len(line)):
             if line[col] == "*":
-                maze.set_wall(row, col)
+                maze1.set_wall(row, col)
 
     # Close the maze file and return the newly constructed maze.
     infile.close()
 
-    return maze
+    return maze1
 
 
 def read_value_pair(infile):
     """Extracts an integer value pair from the given input file."""
     line = infile.readline()
-    valA, valB = line.split()
-    return int(valA), int(valB)
-
-
-def main():
-    """
-    >>> maze = build_maze("Maze/mazefile.txt")
-    >>> print(maze)
-    * * * * * 
-    * _ * _ * 
-    * _ _ _ * 
-    * _ * _ _ 
-    _ _ * * * 
-    >>> maze.findPath()
-    True
-    >>> print(maze)
-    * * * * * 
-    * o * o * 
-    * x x x * 
-    * x * x x 
-    _ x * * * 
-    >>> maze.reset()
-    >>> print(maze)
-    * * * * * 
-    * _ * _ * 
-    * _ _ _ * 
-    * _ * _ _ 
-    _ _ * * *
-    """
+    val_a, val_b = line.split()
+    return int(val_a), int(val_b)
 
 
 if __name__ == '__main__':
-    import doctest
-    print(doctest.testmod())
+    maze = build_maze("Maze/mazefile1.txt")
+    print(maze.find_path())
+    print(maze)
