@@ -73,5 +73,5 @@ class Palindrome:
 
 if __name__ == '__main__':
     palindrome = Palindrome()
-    print(palindrome.find_palindromes("base.lst", "palindrome_uk.txt"))
-    print(palindrome.find_palindromes("words.txt", "palindrome_en.txt"))
+    print(palindrome.find_palindromes("palindrome/base.lst", "palindrome/palindrome_uk.txt"))
+    print(palindrome.find_palindromes("palindrome/words.txt", "palindrome/palindrome_en.txt"))
