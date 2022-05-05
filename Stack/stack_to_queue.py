@@ -28,8 +28,8 @@ def stack_to_queue(stack):
     """
     orig_stack = ArrayStack()
     new_queue = ArrayQueue()
-    orig_stack._items = stack._items
-    orig_stack._size = stack._size
+    for elem in stack:
+        orig_stack.push(elem)
     to_add = [orig_stack.pop() for _ in range(orig_stack._size)]
     for elem in to_add:
         new_queue.add(elem)
