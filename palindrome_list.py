@@ -34,7 +34,6 @@ class Palindrome:
         """
         with open(path, 'w') as output_file:
             output_file.write('\n'.join(words))
-        pass
 
     def find_palindromes(self, dict_path, out_path):
         """
@@ -42,30 +41,32 @@ class Palindrome:
         calls the read_file and write_to_file functions.
         """
         data = self.read_file(dict_path)
-        words = set()
+        words = []
         for elem in data:
             orig_word = ArrayStack()
             rev_word = ArrayStack()
             word_len = len(elem)
-            word_len //= 2
-            for letter in elem:
-                orig_word.push(letter)
-            for _ in range(word_len):
-                rev_word.push(orig_word.pop())
-            pal_flag = False
-            if orig_word._size != rev_word._size:
-                orig_word.pop()
-            for _ in range(word_len):
-                let1 = rev_word.pop()
-                let2 = orig_word.pop()
-                if let1 != let2:
-                    pal_flag = False
-                    break
-                else:
-                    pal_flag = True
-            if pal_flag:
-                words.add(elem)
-        words = sorted(list(words))
+            if word_len != 1:
+                word_len //= 2
+                for letter in elem:
+                    orig_word.push(letter)
+                for _ in range(word_len):
+                    rev_word.push(orig_word.pop())
+                pal_flag = False
+                if orig_word._size != rev_word._size:
+                    orig_word.pop()
+                for _ in range(word_len):
+                    let1 = rev_word.pop()
+                    let2 = orig_word.pop()
+                    if let1 != let2:
+                        pal_flag = False
+                        break
+                    else:
+                        pal_flag = True
+                if pal_flag and elem not in words:
+                    words.append(elem)
+            elif elem not in words:
+                words.append(elem)
         self.write_to_file(out_path, words)
         return words
 
