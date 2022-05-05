@@ -19,12 +19,22 @@ class Palindrome:
         """
         with open(path, 'r') as file:
             contents = file.read()
-            return [
-                line.split(' /')[0].split(' adv')[0].split(
-                    ' excl')[0].split(' +cs=')[-1]
-                for line in contents.split('\n')
-                if line != ''
-            ]
+            return list(dict.fromkeys([
+                word for elem in [
+                    line.split(' /')[0].split(' adv')[0].split(
+                        ' noun')[0].split(' adj')[0].split(
+                        ' predic')[0].split(' excl')[0].split(
+                        ' insert')[0].split(' :v')[0].split(
+                        ' part')[0].split(' verb')[0].split(
+                        ' :rare')[0].split(' :coll')[0].split(
+                        '/A')[0].split(' conj')[0].split(
+                        ' +cs=')[-1].strip('#').strip(' \\').split()
+                    for line in contents.split('\n')
+                    if line != ''
+                ]
+                for word in elem
+                if word
+            ]))
 
     @staticmethod
     def write_to_file(path, words):
@@ -73,5 +83,7 @@ class Palindrome:
 
 if __name__ == '__main__':
     palindrome = Palindrome()
-    print(palindrome.find_palindromes("palindrome/base.lst", "palindrome/palindrome_uk.txt"))
-    print(palindrome.find_palindromes("palindrome/words.txt", "palindrome/palindrome_en.txt"))
+    print(palindrome.find_palindromes(
+        "palindrome/base.lst", "palindrome/palindrome_uk.txt"))
+    print(palindrome.find_palindromes(
+        "palindrome/words.txt", "palindrome/palindrome_en.txt"))
